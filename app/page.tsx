@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
 // NOTE: This file is self-contained for easy publishing.
 // No shadcn/ui imports required.
 
@@ -1559,7 +1560,6 @@ export default function ChauffeurBookingSite() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <Label>Service</Label>
-                    <Label>Service</Label>
                     <NativeSelect value={service} onChange={(v) => selectService(v as any)}>
                       <option value="airport">Airport Transfer</option>
                       <option value="hourly">Hourly Chauffeur</option>
@@ -1859,4 +1859,3 @@ export default function ChauffeurBookingSite() {
     </ErrorBoundary>
   );
 }
-
