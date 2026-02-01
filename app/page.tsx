@@ -749,7 +749,6 @@ export default function ChauffeurBookingSite() {
   const envKey =
     (typeof process !== "undefined" && (process as any)?.env?.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) ||
     (typeof process !== "undefined" && (process as any)?.env?.REACT_APP_GOOGLE_MAPS_API_KEY) ||
-    (typeof import.meta !== "undefined" && (import.meta as any)?.env?.VITE_GOOGLE_MAPS_API_KEY) ||
     (typeof window !== "undefined" && window.__GOOGLE_MAPS_API_KEY);
 
   const apiKey = (envKey as string) || manualKey || "";
@@ -1859,3 +1858,4 @@ export default function ChauffeurBookingSite() {
     </ErrorBoundary>
   );
 }
+
