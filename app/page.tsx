@@ -1,101 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-
-// NOTE: This file is self-contained for easy publishing.
-// No shadcn/ui imports required.
-
-function cn(...parts: Array<string | false | null | undefined>) {
-  return parts.filter(Boolean).join(" ");
-}
-
-function Card(props: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      {...props}
-      className={cn(
-        "rounded-2xl border border-neutral-800 bg-neutral-900/80",
-        props.className
-      )}
-    />
-  );
-}
-
-function CardContent(props: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} className={cn("p-6", props.className)} />;
-}
-
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "default" | "secondary" | "outline";
-  size?: "default" | "sm";
-};
-
-function Button({ variant = "default", size = "default", className, ...props }: ButtonProps) {
-  const base =
-    "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-2 focus:ring-neutral-400";
-  const variants: Record<string, string> = {
-    default: "bg-white text-black hover:bg-neutral-200",
-    secondary: "bg-neutral-800 text-white hover:bg-neutral-700",
-    outline: "border border-neutral-700 bg-transparent text-white hover:bg-neutral-900",
-  };
-  const sizes: Record<string, string> = {
-    default: "h-10 px-4 text-sm",
-    sm: "h-9 px-3 text-sm",
-  };
-  return (
-    <button
-      {...props}
-      className={cn(base, variants[variant], sizes[size], className)}
-    />
-  );
-}
-
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      {...props}
-      className={cn(
-        "h-10 w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-3 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-400",
-        props.className
-      )}
-    />
-  );
-}
-
-function Label(props: React.LabelHTMLAttributes<HTMLLabelElement>) {
-  return (
-    <label
-      {...props}
-      className={cn("text-sm font-medium text-neutral-200", props.className)}
-    />
-  );
-}
-
-function NativeSelect({
-  value,
-  onChange,
-  children,
-  className,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={cn(
-        "mt-1 h-10 w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-neutral-400",
-        className
-      )}
-    >
-      {children}
-    </select>
-  );
-}
-
 import { motion } from "framer-motion";
 import {
   Phone,
@@ -617,11 +522,24 @@ function parseDurationSeconds(duration: any): number | null {
   return null;
 }
 
+type RoutesOk = {
+  ok: true;
+  meters: number;
+  seconds: number;
+  encodedPolyline: string;
+};
+
+type RoutesErr = {
+  ok: false;
+  status: string;
+  message: string;
+};
+
 async function computeRouteViaRoutesAPI(args: {
   apiKey: string;
   origin: { lat: number; lng: number };
   destination: { lat: number; lng: number };
-}) {
+}): Promise<RoutesOk | RoutesErr> {
   const endpoint = "https://routes.googleapis.com/directions/v2:computeRoutes";
   const body = {
     origin: {
@@ -667,7 +585,7 @@ async function computeRouteViaRoutesAPI(args: {
     if (String(status).toUpperCase().includes("PERMISSION_DENIED")) {
       return { ok: false, status: "REQUEST_DENIED", message: combined };
     }
-    return { ok: false, status: "ERROR", message: combined };
+    return { ok: false, status: String(status), message: combined };
   }
 
   const route = json?.routes?.[0];
@@ -1858,4 +1776,3 @@ export default function ChauffeurBookingSite() {
     </ErrorBoundary>
   );
 }
-
